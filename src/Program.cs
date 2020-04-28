@@ -78,12 +78,51 @@ namespace PruferCode
             }
             return child_parent_table;
         }
+
+        static void command_line()
+        {
+            List<string> commands = new List<string>();
+            commands.Add("build");
+            commands.Add("help");
+            commands.Add("status");
+            commands.Add("structure");
+            commands.Add("prufer");
+            commands.Add("erase");
+            commands.Add("clear");
+            commands.Add("exit");
+            while (true)
+            {
+                Console.Write(">> ");
+                string input_cmd = Console.ReadLine();
+                string[] parsed_input = input_cmd.Split(':');
+                if (!commands.Contains(parsed_input[0]))
+                {
+                    Console.WriteLine("Invalid command. Type 'help' for instructions.");
+                    continue;
+                }
+                if(parsed_input[0] == "exit")
+                {
+                    Console.WriteLine("Exiting...");
+                    break;
+                }
+                if(parsed_input[0] == "build")
+                {
+                    if(parsed_input.Length <= 1)
+                    {
+                        Console.WriteLine("No tree input found. Tree structure format: [child] [parent];");
+                    }
+                }
+            }
+           
+        }
         static void Main(string[] args)
         {
+            /*
             List<Tuple<int, int>> input_table = InputParser();
             Tree t = new Tree(input_table);
             List<int> prufer = t.PruferCode();
-            Tree t2 = new Tree(prufer);
+            Tree t2 = new Tree(prufer);*/
+            command_line();
         }
     }
 }
