@@ -25,6 +25,7 @@ namespace PruferCode
         {
             //This function will not add any nodes with no direct path to the root
             this.root = new Node(table[0].Item1);
+            this.root.Parent = this.root;
             Node curr;
             Queue<Node> node_queue = new Queue<Node>();
             node_queue.Enqueue(root);
@@ -35,7 +36,8 @@ namespace PruferCode
                 {
                     if (table[i].Item2 == curr.Data)
                     {
-                        curr.AddChild(table[i].Item1);
+                        Node child = new Node(curr, table[i].Item1);
+                        curr.AddChild(child);
                     }
 
                 }
@@ -48,6 +50,10 @@ namespace PruferCode
                     }
                 }
             }
+        }
+        public Tree(Tree t)
+        {
+            
         }
         public Node Root{get => root; set => root = value; }
         
@@ -91,7 +97,9 @@ namespace PruferCode
         }
         public List<int> PruferCode()
         {
+            Tree copy = this;
             List<int> prufer_code = new List<int>();
+            
             return prufer_code;
         }
     }
