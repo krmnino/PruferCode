@@ -80,11 +80,14 @@ namespace PruferCode
         }
         static void Main(string[] args)
         {
-            Tree t = new Tree(new Node(0));
             List<Tuple<int, int>> input_table = InputParser();
-            List<int> data = t.BFTraversal();
-            Tree t2 = new Tree(input_table);
-            Node smallest = t2.MinLeaf();
+            Tree t = new Tree(input_table);
+            //List<int> prufer = t.PruferCode();
+            Tree t_copy = new Tree(t);
+            if (t.Equals(t_copy))
+            {
+                Console.WriteLine("SAME");
+            }
         }
     }
 }

@@ -27,12 +27,6 @@ namespace PruferCode
             this.data = data_;
             this.children = new List<Node>();
         }
-        public Node(Node n)
-        {
-            this.parent = n.Parent;
-            this.data = n.Data;
-            this.children = new List<Node>();
-        }
         public int Data { get => this.data; set => this.data = value; }
         public Node Parent { get => this.parent; set => this.parent = value; }
         public List<Node> Children { get => this.children; set => this.children = value; }
