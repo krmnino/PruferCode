@@ -82,12 +82,8 @@ namespace PruferCode
         {
             List<Tuple<int, int>> input_table = InputParser();
             Tree t = new Tree(input_table);
-            //List<int> prufer = t.PruferCode();
-            Tree t_copy = new Tree(t);
-            if (t.Equals(t_copy))
-            {
-                Console.WriteLine("SAME");
-            }
+            List<int> prufer = t.PruferCode();
+            Tree t2 = new Tree(prufer);
         }
     }
 }

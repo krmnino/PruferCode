@@ -76,6 +76,104 @@ namespace PruferCode
                 }
             }
         }
+        //Constructor Method, builds tree from list containing Prufer Code
+        public Tree(List<int> prufer_code)
+        {
+            //Create child-parent relationship table (2D list)
+            List<List<int>> child_parent_table = new List<List<int>>();
+            //Resize table with the size of Prufer code list + 1 for the last node to the root
+            for(int i = 0; i < prufer_code.Count + 1; i++) { child_parent_table.Add(new List<int>()); }
+            //Add -1 initizer for child node and the parent node from Prufer code. Add 0 for the last child-parent node
+            for(int i = 0; i < child_parent_table.Count; i++)
+            {
+                if (i == prufer_code.Count)
+                {
+                    child_parent_table[i].Add(-1);
+                    child_parent_table[i].Add(0);
+                }
+                else
+                {
+                    child_parent_table[i].Add(-1);
+                    child_parent_table[i].Add(prufer_code[i]);
+                }
+            }
+            //Find the smallest available node value from the child-parent relationship parent
+            for (int i = 0; i < child_parent_table.Count; i++)
+            {
+                List<int> existing_nodes = new List<int>();
+                int min_available;
+                for (int j = 0; j < child_parent_table.Count; j++)
+                {
+                    
+                    if (j < i)
+                    {
+                        if (!existing_nodes.Contains(child_parent_table[j][0]))
+                        {
+                            existing_nodes.Add(child_parent_table[j][0]);
+                        }
+                    }
+                    else
+                    {
+                        if (!existing_nodes.Contains(child_parent_table[j][1]))
+                        {
+                            existing_nodes.Add(child_parent_table[j][1]);
+                        }
+                    }
+                    
+                }
+                for (min_available = 0; min_available < child_parent_table.Count; min_available++)
+                {
+                    if (!existing_nodes.Contains(min_available))
+                    {
+                        break;
+                    }
+                }
+                child_parent_table[i][0] = min_available;
+            }
+            //Selection sort: sort tree structure to keep direct children of root closer to index = 0
+            for (int i = 0; i < child_parent_table.Count; i++)
+            {
+                int min_index = i;
+                for (int j = child_parent_table.Count - 1; j > i; j--)
+                {
+                    if (child_parent_table[j][1] < child_parent_table[min_index][1])
+                    {
+                        min_index = j;
+                    }
+                }
+                List<int> temp = child_parent_table[i];
+                child_parent_table[i] = child_parent_table[min_index];
+                child_parent_table[min_index] = temp;
+            }
+            //Build tree from child-parent relationship table
+            this.root = new Node(child_parent_table[0][1]);
+            this.root.Parent = this.root;
+            Node curr;
+            Queue<Node> node_queue = new Queue<Node>();
+            node_queue.Enqueue(root);
+            while (node_queue.Count != 0)
+            {
+                curr = node_queue.Dequeue();
+                for (int i = 0; i < child_parent_table.Count; i++)
+                {
+                    if (child_parent_table[i][1] == curr.Data)
+                    {
+                        Node child = new Node(curr, child_parent_table[i][0]);
+                        curr.AddChild(child);
+                    }
+
+                }
+                if (curr.Children.Count != 0)
+                {
+                    curr.SortChildren();
+                    for (int i = 0; i < curr.Children.Count; i++)
+                    {
+                        node_queue.Enqueue(curr.Children[i]);
+                    }
+                }
+            }
+        }
+
         //Tree's root accessor method
         public Node Root{get => root; set => root = value; }
         //Breadth-first traversal of n-ary tree
@@ -129,6 +227,7 @@ namespace PruferCode
                 prufer_code.Add(min_leaf.Parent.Data);
                 min_leaf.Parent.Children.Remove(min_leaf);
             }
+            prufer_code.RemoveAt(prufer_code.Count - 1);
             return prufer_code;
         }
     }
