@@ -51,10 +51,6 @@ namespace PruferCode
                 }
             }
         }
-        public Tree(Tree t)
-        {
-            
-        }
         public Node Root{get => root; set => root = value; }
         
         public List<int> BFTraversal()

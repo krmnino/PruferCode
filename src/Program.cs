@@ -16,7 +16,6 @@ namespace PruferCode
             int index_end = input.IndexOf(";");
             int child;
             int parent;
-            int box_n;
             bool root_set = false;
             while (true)
             {
@@ -33,6 +32,11 @@ namespace PruferCode
                 parent = Int32.Parse(parent_child.Substring(parent_child.IndexOf(" ") + 1));
                 if (!root_set)
                 {
+                    if(parent != 0)
+                    {
+                        Console.WriteLine("Root node is not [0].");
+                        return new List<Tuple<int, int>>();
+                    }
                     child_parent_table.Add(Tuple.Create(parent, parent));
                     root_set = true;
                 }
@@ -50,6 +54,26 @@ namespace PruferCode
                 if (index_end == -1)
                 {
                     break;
+                }
+            }
+            for (int i = 1; i < child_parent_table.Count; i++)
+            {
+                for (int j = 1; j < child_parent_table.Count; j++)
+                {
+                    if (child_parent_table[j].Item1 == i)
+                    {
+                        break;
+                    }
+                    if (j == child_parent_table.Count - 1)
+                    {
+                        Console.WriteLine("Sequence incomplete. Node [" + i + "] is missing.");
+                        return new List<Tuple<int, int>>();
+                    }
+                    if (child_parent_table[j].Item1 >= child_parent_table.Count)
+                    {
+                        Console.WriteLine("Node [" + child_parent_table[j].Item1 + "] is equal or greater than the upper bound for [" + child_parent_table.Count + "].");
+                        return new List<Tuple<int, int>>();
+                    }
                 }
             }
             return child_parent_table;
