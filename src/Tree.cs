@@ -8,10 +8,14 @@ namespace PruferCode
 {
     class Tree
     {
+        //tree's root
         private Node root;
+        //labels for each node ranging from 0 to n
+        private int box_n; 
         public Tree()
         {
             this.root = new Node();
+            this.root.Parent = this.root;
         }
         public Tree(Node root_)
         {
@@ -64,6 +68,31 @@ namespace PruferCode
                 }
             }
             return data_nodes;
+        }
+        public Node MinLeaf()
+        {
+            Node min_node = null;
+            Queue<Node> node_queue = new Queue<Node>();
+            List<Node> curr_children;
+            node_queue.Enqueue(this.root);
+            while (node_queue.Count != 0)
+            {
+                curr_children = node_queue.Dequeue().Children;
+                for (int i = 0; i < curr_children.Count; i++)
+                {
+                    node_queue.Enqueue(curr_children[i]);
+                    if((min_node == null || min_node.Data > curr_children[i].Data) && curr_children[i].Children.Count == 0)
+                    {
+                        min_node = curr_children[i];
+                    }
+                }
+            }
+            return min_node;
+        }
+        public List<int> PruferCode()
+        {
+            List<int> prufer_code = new List<int>();
+            return prufer_code;
         }
     }
 }

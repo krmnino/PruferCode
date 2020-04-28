@@ -9,7 +9,6 @@ namespace PruferCode
 {
     class Program
     {
-        
         static List<Tuple<int, int>> InputParser()
         {
             List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
@@ -17,6 +16,7 @@ namespace PruferCode
             int index_end = input.IndexOf(";");
             int child;
             int parent;
+            int box_n;
             bool root_set = false;
             while (true)
             {
@@ -36,11 +36,18 @@ namespace PruferCode
                     child_parent_table.Add(Tuple.Create(parent, parent));
                     root_set = true;
                 }
+                for(int i = 0; i < child_parent_table.Count; i++)
+                {
+                    if(child == child_parent_table[i].Item1)
+                    {
+                        Console.WriteLine(child + " is duplicated.");
+                        return new List<Tuple<int, int>>();
+                    }
+                }
                 child_parent_table.Add(Tuple.Create(child, parent));
-                Console.WriteLine(parent_child);
                 input = input.Substring(index_end + 1);
                 index_end = input.IndexOf(";");
-                if(index_end == -1)
+                if (index_end == -1)
                 {
                     break;
                 }
@@ -74,6 +81,7 @@ namespace PruferCode
             List<int> data = t.BFTraversal();
             Tree t2 = new Tree(input_table);
             List<int> data2 = t.BFTraversal();
+            Node smallest = t2.MinLeaf();
         }
     }
 }

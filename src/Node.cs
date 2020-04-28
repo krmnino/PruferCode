@@ -8,6 +8,7 @@ namespace PruferCode
 {
     class Node
     {
+        private Node parent;
         private List<Node> children;
         private int data;
         public Node()
@@ -19,7 +20,14 @@ namespace PruferCode
             this.data = data_;
             this.children = new List<Node>();
         }
+        public Node(Node parent_, int data_)
+        {
+            this.parent = parent_;
+            this.data = data_;
+            this.children = new List<Node>();
+        }
         public int Data { get => this.data; set => this.data = value; }
+        public Node Parent { get => this.parent; set => this.parent = value; }
         public List<Node> Children { get => this.children; set => this.children = value; }
         public void AddChild(int data_)
         {
@@ -52,6 +60,7 @@ namespace PruferCode
                 this.Children[min_index] = temp;
             }
         }
+
         public override string ToString()
         {
             return this.data.ToString();
