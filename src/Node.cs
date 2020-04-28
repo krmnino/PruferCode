@@ -30,6 +30,28 @@ namespace PruferCode
         {
             Console.WriteLine(this.data); 
         }
+        public void SortChildren()
+        {
+            if(this.Children.Count == 0)
+            {
+                return;
+            }
+            //Selection Sort
+            for (int i = 0; i < this.Children.Count; i++)
+            {
+                int min_index = i;
+                for (int j = this.Children.Count - 1; j > i; j--)
+                {
+                    if (this.Children[j].Data < this.Children[min_index].Data)
+                    {
+                        min_index = j;
+                    }
+                }
+                Node temp = this.Children[i];
+                this.Children[i] = this.Children[min_index];
+                this.Children[min_index] = temp;
+            }
+        }
         public override string ToString()
         {
             return this.data.ToString();

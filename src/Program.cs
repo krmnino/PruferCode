@@ -9,14 +9,7 @@ namespace PruferCode
 {
     class Program
     {
-        static bool FindNode(List<Tuple<int, int>> table, int row)
-        {
-            for(int i = 0; i < table.Count; i++)
-            {
-
-            }
-            return true;
-        }
+        
         static List<Tuple<int, int>> InputParser()
         {
             List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
@@ -44,7 +37,6 @@ namespace PruferCode
                     root_set = true;
                 }
                 child_parent_table.Add(Tuple.Create(child, parent));
-                Console.WriteLine(child + parent);
                 Console.WriteLine(parent_child);
                 input = input.Substring(index_end + 1);
                 index_end = input.IndexOf(";");
@@ -65,7 +57,8 @@ namespace PruferCode
             t.Root.Children[0].AddChild(2);
             t.Root.Children[0].AddChild(7);
             t.Root.Children[0].Children[1].AddChild(5);
-            t.Root.Children[0].Children[1].Children[0].DisplayData();
+
+            /*
             Dictionary<int, int> dic = new Dictionary<int, int>();
             dic.Add(4, 0);
             dic.Add(6, 0);
@@ -75,10 +68,12 @@ namespace PruferCode
             dic.Add(7, 6);
             dic.Add(5, 2);
             Hashtable hs = new Hashtable(dic);
-            Console.WriteLine((int)hs[1]);
-            //InputParser();
-            List<int> data = t.BFS_traversal();
-            
+            //Console.WriteLine((int)hs[1]);
+            */
+            List<Tuple<int, int>> input_table = InputParser();
+            List<int> data = t.BFTraversal();
+            Tree t2 = new Tree(input_table);
+            List<int> data2 = t.BFTraversal();
         }
     }
 }
