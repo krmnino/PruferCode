@@ -85,14 +85,12 @@ namespace PruferCode
 
         static void command_line()
         {
-            string[] commands_arr = { "new", "help", "status", "structure", "prufer", "delete", "empty", "clear", "exit" };
+            string[] commands_arr = { "new", "help", "status", "display", "prufer", "delete", "empty", "clear", "exit" };
             TreeContainer container = new TreeContainer();
-            List<string> prufer_code_container = new List<string>();
             while (true)
             {
                 Console.Write(">> ");
-                string input_cmd = Console.ReadLine();
-                string[] parsed_input = input_cmd.Split(' ');
+                string[] parsed_input = Console.ReadLine().Split(' ');
                 if (!commands_arr.Contains<string>(parsed_input[0]))
                 {
                     Console.WriteLine("Invalid command. Type 'help' for instructions.");
@@ -115,9 +113,8 @@ namespace PruferCode
                     {
                         List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
                         Console.WriteLine("INFO:");
-                        Console.WriteLine("Tree structure format: [child] [parent]; ");
-                        Console.WriteLine("Press ENTER, and enter the next node or type '-1' to finish.");
-                        Console.WriteLine("In the first pair entered, the parent must be 0 since it's the root.");
+                        Console.WriteLine("Tree structure format: [child] [parent]; [child] [parent]; ...");
+                        Console.WriteLine("The first pair entered, parent must be 0 since it is the root.");
                         Console.WriteLine("=== Start here ===");
                         Console.Write(">> ");
                         string parent_child_input = Console.ReadLine();
@@ -130,12 +127,46 @@ namespace PruferCode
                     }
                     else if (parsed_input[1] == "-p")
                     {
+                        List<int> prufer_code = new List<int>();
                         Console.WriteLine("INFO:");
-                        Console.WriteLine("Prufer format: [parent]; [parent]; ");
+                        Console.WriteLine("Prufer format: [parent] [parent] ...");
                         Console.WriteLine("=== Start here ===");
                         Console.Write(">> ");
                         string prufer_input = Console.ReadLine();
-
+                        int index_end = prufer_input.IndexOf(";");
+                        if (prufer_input.Length == 0 || index_end == -1)
+                        {
+                            Console.WriteLine("Prufer code structure invalid. Usage: [parent];[parent]; ...[parent];");
+                            continue;
+                        }
+                        while (true)
+                        {
+                            while (prufer_input[0] == ' ')
+                            {
+                                prufer_input = prufer_input.Substring(1);
+                            }
+                            while (prufer_input[prufer_input.Length - 1] == ' ')
+                            {
+                                prufer_input = prufer_input.Substring(0, prufer_input.Length - 1);
+                            }
+                            try
+                            {
+                                int parsed_prufer_val = Int32.Parse(prufer_input.Substring(0, prufer_input.IndexOf(";")));
+                                prufer_code.Add(parsed_prufer_val);
+                                prufer_input = prufer_input.Substring(index_end + 1);
+                                index_end = prufer_input.IndexOf(";");
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine("Invalid value for index in container. Use an integer.");
+                                break;
+                            }
+                            if (index_end == -1)
+                            {
+                                break;
+                            }
+                        }
+                        container.AddTree(new Tree(prufer_code));
                     }
                 }
                 if (parsed_input[0] == "status")
@@ -167,7 +198,7 @@ namespace PruferCode
                     }
                     catch(Exception e)
                     {
-                        Console.WriteLine("Invalid valuem for index in container. Use an integer.");
+                        Console.WriteLine("Invalid value for index in container. Use an integer.");
                     }
                     continue;
                 }
