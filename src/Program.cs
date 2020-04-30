@@ -9,22 +9,26 @@ namespace PruferCode
 {
     class Program
     {
-        static List<Tuple<int, int>> InputParser()
+        static List<Tuple<int, int>> InputParser(string input)
         {
             List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
-            String input = Console.ReadLine();
             int index_end = input.IndexOf(";");
             int child;
             int parent;
             bool root_set = false;
+            if(input.Length == 0 || index_end == -1)
+            {
+                Console.WriteLine("Tree structure invalid. Usage: [child] [parent];");
+                return null;
+            }
             while (true)
             {
                 string parent_child = input.Substring(0, index_end);
-                while(parent_child[0] == ' ')
+                while (parent_child[0] == ' ')
                 {
                     parent_child = parent_child.Substring(1);
                 }
-                while (parent_child[parent_child.Length-1] == ' ')
+                while (parent_child[parent_child.Length - 1] == ' ')
                 {
                     parent_child = parent_child.Substring(0, parent_child.Length - 1);
                 }
@@ -32,20 +36,20 @@ namespace PruferCode
                 parent = Int32.Parse(parent_child.Substring(parent_child.IndexOf(" ") + 1));
                 if (!root_set)
                 {
-                    if(parent != 0)
+                    if (parent != 0)
                     {
                         Console.WriteLine("Root node is not [0].");
-                        return new List<Tuple<int, int>>();
+                        return null;
                     }
                     child_parent_table.Add(Tuple.Create(parent, parent));
                     root_set = true;
                 }
-                for(int i = 0; i < child_parent_table.Count; i++)
+                for (int i = 0; i < child_parent_table.Count; i++)
                 {
-                    if(child == child_parent_table[i].Item1)
+                    if (child == child_parent_table[i].Item1)
                     {
                         Console.WriteLine(child + " is duplicated.");
-                        return new List<Tuple<int, int>>();
+                        return null;
                     }
                 }
                 child_parent_table.Add(Tuple.Create(child, parent));
@@ -67,12 +71,12 @@ namespace PruferCode
                     if (j == child_parent_table.Count - 1)
                     {
                         Console.WriteLine("Sequence incomplete. Node [" + i + "] is missing.");
-                        return new List<Tuple<int, int>>();
+                        return null;
                     }
                     if (child_parent_table[j].Item1 >= child_parent_table.Count)
                     {
                         Console.WriteLine("Node [" + child_parent_table[j].Item1 + "] is equal or greater than the upper bound for [" + child_parent_table.Count + "].");
-                        return new List<Tuple<int, int>>();
+                        return null;
                     }
                 }
             }
@@ -81,7 +85,7 @@ namespace PruferCode
 
         static void command_line()
         {
-            string[] commands_arr = { "new", "help", "status", "structure", "prufer", "erase", "clear", "exit" };
+            string[] commands_arr = { "new", "help", "status", "structure", "prufer", "delete", "empty", "clear", "exit" };
             TreeContainer container = new TreeContainer();
             List<string> prufer_code_container = new List<string>();
             while (true)
@@ -111,66 +115,67 @@ namespace PruferCode
                     {
                         List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
                         Console.WriteLine("INFO:");
-                        Console.WriteLine("Tree structure format: [child] [parent]");
+                        Console.WriteLine("Tree structure format: [child] [parent]; ");
                         Console.WriteLine("Press ENTER, and enter the next node or type '-1' to finish.");
                         Console.WriteLine("In the first pair entered, the parent must be 0 since it's the root.");
                         Console.WriteLine("=== Start here ===");
-                        string parent_child_input = "";
-                        int child, parent;
-                        while (true)
+                        Console.Write(">> ");
+                        string parent_child_input = Console.ReadLine();
+                        List<Tuple<int, int>> table = InputParser(parent_child_input);
+                        if (table != null)
                         {
-                            Console.Write(">>> ");
-                            parent_child_input = Console.ReadLine();
-                            if(parent_child_input == "-1")
-                            {
-                                Console.WriteLine();
-                                break;
-                            }
-                            while (parent_child_input[0] == ' ')
-                            {
-                                parent_child_input = parent_child_input.Substring(1);
-                            }
-                            while (parent_child_input[parent_child_input.Length - 1] == ' ')
-                            {
-                                parent_child_input = parent_child_input.Substring(0, parent_child_input.Length - 1);
-                            }
-                            try
-                            {
-                                child = Int32.Parse(parent_child_input.Substring(0, parent_child_input.IndexOf(" ")));
-                                parent = Int32.Parse(parent_child_input.Substring(parent_child_input.IndexOf(" ") + 1));
-                                child_parent_table.Add(Tuple.Create(child, parent));
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Invalid node value. Must be an integer.");
-                                continue;
-                            }
+                            container.AddTree(new Tree(table));   
                         }
-                        if(child_parent_table.Count == 0)
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            container.AddTree(new Tree(child_parent_table));
-                        }
+                        continue;
                     }
                     else if (parsed_input[1] == "-p")
                     {
-                        
+                        Console.WriteLine("INFO:");
+                        Console.WriteLine("Prufer format: [parent]; [parent]; ");
+                        Console.WriteLine("=== Start here ===");
+                        Console.Write(">> ");
+                        string prufer_input = Console.ReadLine();
+
                     }
                 }
                 if (parsed_input[0] == "status")
                 {
-                    
+                    Console.WriteLine(container.ToString());
                 }
                 if (parsed_input[0] == "prufer")
                 {
 
                 }
-                if (parsed_input[0] == "erase")
+                if (parsed_input[0] == "delete")
                 {
-
+                    if(parsed_input.Length < 2)
+                    {
+                        Console.WriteLine("Must specify a tree in container. Use 'status' to check which tree to delete.");
+                    }
+                    try
+                    {
+                        int position = Int32.Parse(parsed_input[1]);
+                        if(container.DeleteTree(position) == null)
+                        {
+                            Console.WriteLine("Index " + position + "in container is empty.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Deleted tree at index: " + position);
+                        }
+                        continue;
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine("Invalid valuem for index in container. Use an integer.");
+                    }
+                    continue;
+                }
+                if(parsed_input[0] == "empty")
+                {
+                    container.EmptyCollection();
+                    Console.WriteLine("Container emptied.");
+                    continue;
                 }
                 if (parsed_input[0] == "clear")
                 {

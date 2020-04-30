@@ -34,11 +34,17 @@ namespace PruferCode
         public void AddTree(Tree t)
         {
             this.collection[this.min_empty_spot] = t;
+            this.min_empty_spot++;
             int i = this.min_empty_spot;
-            do
+            while(true)
             {
+                if (i >= this.collection.Count || this.collection[i] == null)
+                {
+                    break;
+                }
                 this.min_empty_spot++;
-            } while (i < this.collection.Count || this.collection[i] != null);
+                i++;
+            }
         }
         public Tree DeleteTree(int position)
         {
@@ -54,6 +60,24 @@ namespace PruferCode
             }
             return out_tree;
         }
+
+        public void EmptyCollection()
+        {
+            for(int i = 0; i < Collection.Count; i++)
+            {
+                this.Collection[i] = null;
+            }
+        }
+
+        public String DisplayTree(int position)
+        {
+            string out_str = "";
+            if(this.collection[position] != null)
+            {
+                out_str += this.collection[position].ToString();
+            }
+            return out_str;
+        }
         public override string ToString()
         {
             string out_str = "";
@@ -65,7 +89,7 @@ namespace PruferCode
                 }
                 else
                 {
-                    out_str += "[TREE" + i + "E]";
+                    out_str += "[TREE_" + i + "]";
                 }
                 if(i != collection.Count - 1)
                 {

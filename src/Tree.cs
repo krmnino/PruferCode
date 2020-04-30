@@ -49,7 +49,7 @@ namespace PruferCode
         public Tree(List<Tuple<int, int>> table)
         {
             //This function will not add any nodes with no direct path to the root
-            this.root = new Node(table[0].Item1);
+            this.root = new Node(table[0].Item2);
             this.root.Parent = null;
             Node curr;
             Queue<Node> node_queue = new Queue<Node>();
@@ -68,7 +68,7 @@ namespace PruferCode
                 }
                 if (curr.Children.Count != 0)
                 {
-                    curr.SortChildren();
+                    //curr.SortChildren();
                     for (int i = 0; i < curr.Children.Count; i++)
                     {
                         node_queue.Enqueue(curr.Children[i]);
@@ -213,6 +213,11 @@ namespace PruferCode
             }
             prufer_code.RemoveAt(prufer_code.Count - 1);
             return prufer_code;
+        }
+
+        public override string ToString()
+        {
+            return this.root.ToString();
         }
     }
 }
