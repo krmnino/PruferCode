@@ -14,7 +14,7 @@ namespace PruferCode
         public Tree()
         {
             this.root = new Node();
-            this.root.Parent = this.root;
+            this.root.Parent = null;
         }
         //Constructor method, set Node parameter as root
         public Tree(Node root_)
@@ -25,7 +25,7 @@ namespace PruferCode
         public Tree(Tree t)
         {
             this.root = new Node(t.Root.Data);
-            this.root.Parent = this.root;
+            this.root.Parent = null;
             Queue<Node> original_tree_queue = new Queue<Node>();
             Queue<Node> copy_tree_queue = new Queue<Node>();
             original_tree_queue.Enqueue(t.Root);
@@ -50,7 +50,7 @@ namespace PruferCode
         {
             //This function will not add any nodes with no direct path to the root
             this.root = new Node(table[0].Item1);
-            this.root.Parent = this.root;
+            this.root.Parent = null;
             Node curr;
             Queue<Node> node_queue = new Queue<Node>();
             node_queue.Enqueue(root);
@@ -97,16 +97,15 @@ namespace PruferCode
                     child_parent_table[i].Add(prufer_code[i]);
                 }
             }
-            //Find the smallest available node value from the child-parent relationship parent
+            //Find the smallest available node value from the child-parent relationship table
             for (int i = 0; i < child_parent_table.Count; i++)
             {
                 List<int> existing_nodes = new List<int>();
                 int min_available;
                 for (int j = 0; j < child_parent_table.Count; j++)
                 {
-                    
                     if (j < i)
-                    {
+                    { 
                         if (!existing_nodes.Contains(child_parent_table[j][0]))
                         {
                             existing_nodes.Add(child_parent_table[j][0]);
@@ -130,24 +129,9 @@ namespace PruferCode
                 }
                 child_parent_table[i][0] = min_available;
             }
-            //Selection sort: sort tree structure to keep direct children of root closer to index = 0
-            for (int i = 0; i < child_parent_table.Count; i++)
-            {
-                int min_index = i;
-                for (int j = child_parent_table.Count - 1; j > i; j--)
-                {
-                    if (child_parent_table[j][1] < child_parent_table[min_index][1])
-                    {
-                        min_index = j;
-                    }
-                }
-                List<int> temp = child_parent_table[i];
-                child_parent_table[i] = child_parent_table[min_index];
-                child_parent_table[min_index] = temp;
-            }
-            //Build tree from child-parent relationship table
-            this.root = new Node(child_parent_table[0][1]);
-            this.root.Parent = this.root;
+            //Build tree from child-parent relationship table. Use last pair to create root node.
+            this.root = new Node(child_parent_table[child_parent_table.Count - 1][1]);
+            this.root.Parent = null;
             Node curr;
             Queue<Node> node_queue = new Queue<Node>();
             node_queue.Enqueue(root);
@@ -219,9 +203,9 @@ namespace PruferCode
         //Generates Tree's Prufer code 
         public List<int> PruferCode()
         {
-            Tree copy = this;
+            Tree copy = new Tree(this);
             List<int> prufer_code = new List<int>();
-            while (copy.root.Children.Count != 0)
+            while (copy.Root.Children.Count != 0)
             {
                 Node min_leaf = copy.MinLeaf();
                 prufer_code.Add(min_leaf.Parent.Data);

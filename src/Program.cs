@@ -81,21 +81,15 @@ namespace PruferCode
 
         static void command_line()
         {
-            List<string> commands = new List<string>();
-            commands.Add("build");
-            commands.Add("help");
-            commands.Add("status");
-            commands.Add("structure");
-            commands.Add("prufer");
-            commands.Add("erase");
-            commands.Add("clear");
-            commands.Add("exit");
+            string[] commands_arr = { "new", "help", "status", "structure", "prufer", "erase", "clear", "exit" };
+            TreeContainer container = new TreeContainer();
+            List<string> prufer_code_container = new List<string>();
             while (true)
             {
                 Console.Write(">> ");
                 string input_cmd = Console.ReadLine();
-                string[] parsed_input = input_cmd.Split(':');
-                if (!commands.Contains(parsed_input[0]))
+                string[] parsed_input = input_cmd.Split(' ');
+                if (!commands_arr.Contains<string>(parsed_input[0]))
                 {
                     Console.WriteLine("Invalid command. Type 'help' for instructions.");
                     continue;
@@ -105,12 +99,83 @@ namespace PruferCode
                     Console.WriteLine("Exiting...");
                     break;
                 }
-                if(parsed_input[0] == "build")
+                if (parsed_input[0] == "new")
                 {
-                    if(parsed_input.Length <= 1)
+                    if (parsed_input.Length != 2)
                     {
-                        Console.WriteLine("No tree input found. Tree structure format: [child] [parent];");
+                        Console.WriteLine("Invalid input. The 'new' command requires a flag.");
+                        Console.WriteLine(" -t: Create tree from a collection por pairs child-parent.");
+                        Console.WriteLine(" -p: Create tree from Prufer code.");
                     }
+                    else if (parsed_input[1] == "-t")
+                    {
+                        List<Tuple<int, int>> child_parent_table = new List<Tuple<int, int>>();
+                        Console.WriteLine("INFO:");
+                        Console.WriteLine("Tree structure format: [child] [parent]");
+                        Console.WriteLine("Press ENTER, and enter the next node or type '-1' to finish.");
+                        Console.WriteLine("In the first pair entered, the parent must be 0 since it's the root.");
+                        Console.WriteLine("=== Start here ===");
+                        string parent_child_input = "";
+                        int child, parent;
+                        while (true)
+                        {
+                            Console.Write(">>> ");
+                            parent_child_input = Console.ReadLine();
+                            if(parent_child_input == "-1")
+                            {
+                                Console.WriteLine();
+                                break;
+                            }
+                            while (parent_child_input[0] == ' ')
+                            {
+                                parent_child_input = parent_child_input.Substring(1);
+                            }
+                            while (parent_child_input[parent_child_input.Length - 1] == ' ')
+                            {
+                                parent_child_input = parent_child_input.Substring(0, parent_child_input.Length - 1);
+                            }
+                            try
+                            {
+                                child = Int32.Parse(parent_child_input.Substring(0, parent_child_input.IndexOf(" ")));
+                                parent = Int32.Parse(parent_child_input.Substring(parent_child_input.IndexOf(" ") + 1));
+                                child_parent_table.Add(Tuple.Create(child, parent));
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine("Invalid node value. Must be an integer.");
+                                continue;
+                            }
+                        }
+                        if(child_parent_table.Count == 0)
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            container.AddTree(new Tree(child_parent_table));
+                        }
+                    }
+                    else if (parsed_input[1] == "-p")
+                    {
+                        
+                    }
+                }
+                if (parsed_input[0] == "status")
+                {
+                    
+                }
+                if (parsed_input[0] == "prufer")
+                {
+
+                }
+                if (parsed_input[0] == "erase")
+                {
+
+                }
+                if (parsed_input[0] == "clear")
+                {
+                    Console.Clear();
+                    continue;
                 }
             }
            
