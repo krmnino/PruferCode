@@ -31,9 +31,10 @@ namespace PruferCode
                 collection.Add(null);
             }
         }
-        public void AddTree(Tree t)
+        public int AddTree(Tree t)
         {
-            this.collection[this.min_empty_spot] = t;
+            int empty_spot = this.min_empty_spot;
+            this.collection[empty_spot] = t;
             this.min_empty_spot++;
             int i = this.min_empty_spot;
             while(true)
@@ -45,6 +46,7 @@ namespace PruferCode
                 this.min_empty_spot++;
                 i++;
             }
+            return empty_spot;
         }
         public Tree DeleteTree(int position)
         {
@@ -53,7 +55,7 @@ namespace PruferCode
             {
                 out_tree = collection[position];
                 collection[position] = null;
-                if(position > this.min_empty_spot)
+                if(position < this.min_empty_spot)
                 {
                     this.min_empty_spot = position;
                 }

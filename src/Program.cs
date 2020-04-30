@@ -101,6 +101,22 @@ namespace PruferCode
                     Console.WriteLine("Exiting...");
                     break;
                 }
+                if(parsed_input[0] == "help")
+                {
+                    Console.WriteLine("     COMMAND        |                              DESCRIPTION");
+                    Console.WriteLine("--------------------+------------------------------------------------------------------------------");
+                    Console.WriteLine("new -t              | Create a tree by entering a sequence of child-parent pairs.");
+                    Console.WriteLine("                    |    usage new -t [child] [parent]; [child] [parent];...");
+                    Console.WriteLine("new -p              | Create a tree by entering using a string containing Prufer code.");
+                    Console.WriteLine("                    |    usage new -p [parent];[parent];[parent];...");
+                    Console.WriteLine("help                | Display menu description for all exiting commands.");
+                    Console.WriteLine("status              | Display the status of the tree container.");
+                    Console.WriteLine("display [position]  | Display a tree from container at a given index.");
+                    Console.WriteLine("prufer [position]   | Generates Prufer code from a tree stored in container at index [position].");
+                    Console.WriteLine("empty               | Remove all exiting trees in container.");
+                    Console.WriteLine("clear               | Clear the command line.");
+                    Console.WriteLine("exit                | Quit program.");
+                }
                 if (parsed_input[0] == "new")
                 {
                     if (parsed_input.Length != 2)
@@ -121,7 +137,8 @@ namespace PruferCode
                         List<Tuple<int, int>> table = InputParser(parent_child_input);
                         if (table != null)
                         {
-                            container.AddTree(new Tree(table));   
+                            int position = container.AddTree(new Tree(table));
+                            Console.WriteLine("Tree added at index " + position);
                         }
                         continue;
                     }
@@ -167,6 +184,7 @@ namespace PruferCode
                             }
                         }
                         container.AddTree(new Tree(prufer_code));
+                        continue;
                     }
                 }
                 if (parsed_input[0] == "status")
@@ -175,7 +193,41 @@ namespace PruferCode
                 }
                 if (parsed_input[0] == "prufer")
                 {
-
+                    if(parsed_input.Length < 2)
+                    {
+                        Console.WriteLine("Must specify a tree in container. Use 'status' to check which tree to generate its Prufer code.");
+                    }
+                    try
+                    {
+                        int position = Int32.Parse(parsed_input[1]);
+                        if (container.Collection[position] == null)
+                        {
+                            Console.WriteLine("Index " + position + "in container is empty.");
+                        }
+                        else
+                        {
+                            List<int> prufer = container.Collection[position].PruferCode();
+                            string print_prufer = "Prufer: ";
+                            for (int i = 0; i < prufer.Count; i++)
+                            {
+                                print_prufer += prufer[i] + " ";
+                            }
+                            Console.WriteLine(print_prufer);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Invalid value for index in container. Use an integer.");
+                    }
+                    continue;
+                }
+                if(parsed_input[0] == "display")
+                {
+                    //TODO
+                }
+                if(parsed_input[0] == "compare")
+                {
+                    //TODO
                 }
                 if (parsed_input[0] == "delete")
                 {
@@ -188,7 +240,7 @@ namespace PruferCode
                         int position = Int32.Parse(parsed_input[1]);
                         if(container.DeleteTree(position) == null)
                         {
-                            Console.WriteLine("Index " + position + "in container is empty.");
+                            Console.WriteLine("Index " + position + " in container is empty.");
                         }
                         else
                         {
@@ -218,11 +270,6 @@ namespace PruferCode
         }
         static void Main(string[] args)
         {
-            /*
-            List<Tuple<int, int>> input_table = InputParser();
-            Tree t = new Tree(input_table);
-            List<int> prufer = t.PruferCode();
-            Tree t2 = new Tree(prufer);*/
             command_line();
         }
     }
