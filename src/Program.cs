@@ -73,7 +73,7 @@ namespace PruferCode
                         Console.WriteLine("Sequence incomplete. Node [" + i + "] is missing.");
                         return null;
                     }
-                    if (child_parent_table[j].Item1 >= child_parent_table.Count)
+                    if (child_parent_table[j].Item1 > child_parent_table.Count)
                     {
                         Console.WriteLine("Node [" + child_parent_table[j].Item1 + "] is equal or greater than the upper bound for [" + child_parent_table.Count + "].");
                         return null;
@@ -202,7 +202,7 @@ namespace PruferCode
                         int position = Int32.Parse(parsed_input[1]);
                         if (container.Collection[position] == null)
                         {
-                            Console.WriteLine("Index " + position + "in container is empty.");
+                            Console.WriteLine("Index " + position + " in container is empty.");
                         }
                         else
                         {
