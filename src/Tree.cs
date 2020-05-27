@@ -8,7 +8,7 @@ namespace PruferCode
 {
     class Tree
     {
-        //TYree's root
+        //Tree's root
         private Node root;
         //Default constructor method
         public Tree()
